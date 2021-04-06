@@ -118,7 +118,7 @@ export class MessageBusIntegration extends AbstractMessageBusIntegration {
         const listener = new HeadlessWorkspaceLogListener(this.messageBusHelper, callback, workspaceID);
         const cancellationTokenSource = new CancellationTokenSource()
         this.listen(listener, cancellationTokenSource.token);
-        increaseMessagebusTopicReads(listener.topic.name)
+        increaseMessagebusTopicReads(String(listener.topic()))
         return Disposable.create(() => cancellationTokenSource.cancel())
     }
 
@@ -133,7 +133,7 @@ export class MessageBusIntegration extends AbstractMessageBusIntegration {
         const listener = new WorkspaceInstanceUpdateListener(this.messageBusHelper, callback, userId);
         const cancellationTokenSource = new CancellationTokenSource()
         this.listen(listener, cancellationTokenSource.token);
-        increaseMessagebusTopicReads(listener.topic.name);
+        increaseMessagebusTopicReads(String(listener.topic()))
         return Disposable.create(() => cancellationTokenSource.cancel())
     }
 
