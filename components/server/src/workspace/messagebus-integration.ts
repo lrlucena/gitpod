@@ -114,11 +114,11 @@ export class MessageBusIntegration extends AbstractMessageBusIntegration {
         }
     }
 
-    listenForHeadlessWorkspaceLogs(workspaceID: string, callback: (ctx: TraceContext, evt: HeadlessLogEvent) => void): Disposable {
+    async listenForHeadlessWorkspaceLogs(workspaceID: string, callback: (ctx: TraceContext, evt: HeadlessLogEvent) => void): Disposable {
         const listener = new HeadlessWorkspaceLogListener(this.messageBusHelper, callback, workspaceID);
         const cancellationTokenSource = new CancellationTokenSource()
         this.listen(listener, cancellationTokenSource.token);
-        increaseMessagebusTopicReads(String(listener.topic()))
+        increaseMessagebusTopicReads(await listener.topic())
         return Disposable.create(() => cancellationTokenSource.cancel())
     }
 
@@ -129,11 +129,11 @@ export class MessageBusIntegration extends AbstractMessageBusIntegration {
         return Disposable.create(() => cancellationTokenSource.cancel())
     }
 
-    listenForWorkspaceInstanceUpdates(userId: string | undefined, callback: (ctx: TraceContext, workspaceInstance: WorkspaceInstance) => void): Disposable {
+    async listenForWorkspaceInstanceUpdates(userId: string | undefined, callback: (ctx: TraceContext, workspaceInstance: WorkspaceInstance) => void): Disposable {
         const listener = new WorkspaceInstanceUpdateListener(this.messageBusHelper, callback, userId);
         const cancellationTokenSource = new CancellationTokenSource()
         this.listen(listener, cancellationTokenSource.token);
-        increaseMessagebusTopicReads(String(listener.topic()))
+        increaseMessagebusTopicReads(await listener.topic())
         return Disposable.create(() => cancellationTokenSource.cancel())
     }
 
