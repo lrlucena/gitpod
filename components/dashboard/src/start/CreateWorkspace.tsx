@@ -13,6 +13,7 @@ import { getGitpodService, gitpodHostUrl } from "../service/service";
 import { UserContext } from "../user-context";
 import { StartPage, StartPhase, StartWorkspaceError } from "./StartPage";
 import StartWorkspace from "./StartWorkspace";
+import { Redirect } from "react-router-dom";
 
 const WorkspaceLogs = React.lazy(() => import('./WorkspaceLogs'));
 
@@ -85,6 +86,8 @@ export default class CreateWorkspace extends React.Component<CreateWorkspaceProp
             <a href={authorizeUrl}><button className="secondary">Authorize with {error.data.host}</button></a>
           </div>;
           break;
+        case ErrorCodes.USER_BLOCKED:
+          return <Redirect to="/blocked"/>;
         case ErrorCodes.NOT_FOUND:
           return <RepositoryNotFoundView error={error} />;
         case ErrorCodes.PLAN_DOES_NOT_ALLOW_PRIVATE_REPOS:
