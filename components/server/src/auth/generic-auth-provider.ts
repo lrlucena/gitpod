@@ -340,7 +340,7 @@ export class GenericAuthProvider implements AuthProvider {
 
             if (SelectAccountException.is(err)) {
                 this.selectAccountCookie.set(response, err.payload);
-                const url = this.env.hostUrl.with({ pathname: '/select-account' }).toString();
+                const url = this.env.hostUrl.with({ pathname: '/select-account', search: "payload=" + Buffer.from(JSON.stringify(err.payload), "utf-8").toString('base64') }).toString();
                 response.redirect(url);
                 return;
             }
