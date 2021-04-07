@@ -21,7 +21,7 @@ export class WorkspaceInstanceUpdateListener extends AbstractTopicListener<Works
         super(messageBusHelper.workspaceExchange, listener);
     }
 
-    async topic() {
+    topic() {
         return this.messageBusHelper.getWsTopicForListening(this.userId, undefined, "updates");
     }
 }
@@ -32,7 +32,7 @@ export class HeadlessWorkspaceLogListener extends AbstractTopicListener<Headless
         super(messageBusHelper.workspaceExchange, listener);
     }
 
-    async topic() {
+    topic() {
         return this.messageBusHelper.getWsTopicForListening(undefined, this.workspaceID, "headless-log");
     }
 
@@ -114,11 +114,11 @@ export class MessageBusIntegration extends AbstractMessageBusIntegration {
         }
     }
 
-    async listenForHeadlessWorkspaceLogs(workspaceID: string, callback: (ctx: TraceContext, evt: HeadlessLogEvent) => void): Disposable {
+    listenForHeadlessWorkspaceLogs(workspaceID: string, callback: (ctx: TraceContext, evt: HeadlessLogEvent) => void): Disposable {
         const listener = new HeadlessWorkspaceLogListener(this.messageBusHelper, callback, workspaceID);
         const cancellationTokenSource = new CancellationTokenSource()
         this.listen(listener, cancellationTokenSource.token);
-        increaseMessagebusTopicReads(await listener.topic())
+        increaseMessagebusTopicReads(listener.topic())
         return Disposable.create(() => cancellationTokenSource.cancel())
     }
 
@@ -129,11 +129,11 @@ export class MessageBusIntegration extends AbstractMessageBusIntegration {
         return Disposable.create(() => cancellationTokenSource.cancel())
     }
 
-    async listenForWorkspaceInstanceUpdates(userId: string | undefined, callback: (ctx: TraceContext, workspaceInstance: WorkspaceInstance) => void): Disposable {
+    listenForWorkspaceInstanceUpdates(userId: string | undefined, callback: (ctx: TraceContext, workspaceInstance: WorkspaceInstance) => void): Disposable {
         const listener = new WorkspaceInstanceUpdateListener(this.messageBusHelper, callback, userId);
         const cancellationTokenSource = new CancellationTokenSource()
         this.listen(listener, cancellationTokenSource.token);
-        increaseMessagebusTopicReads(await listener.topic())
+        increaseMessagebusTopicReads(listener.topic())
         return Disposable.create(() => cancellationTokenSource.cancel())
     }
 
